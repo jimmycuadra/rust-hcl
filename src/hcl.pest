@@ -1,49 +1,74 @@
+// The top-level scope of an HCL file
+hcl = { soi ~ (nested_object | assignment | pair )* ~ eoi }
+
+// Key-value pairs, possibly nested
+nested_object = { keys ~ object }
 assignment = { key ~ equals ~ value ~ comma? }
-block_comment = _{ "/*" ~ (!"*/" ~ any)* ~ "*/" }
-boolean = { true_lit | false_lit }
-colon = _{ ":" }
-comma = _{ "," }
-comment = { inline_comment | block_comment }
-dash = _{ "-" }
-digit = _{ '0'..'9' }
-dot = _{ "." }
-double_quote = _{ "\"" }
-double_slash = _{ "//" }
-eo_inline_comment = _{ newline | eoi }
-equals = _{ "=" }
-exp = ${ ^"e" ~ (plus | minus)? ~ int }
-false_lit = { "false" }
-float = ${ "-"? ~ int ~ dot ~ int? ~ exp? | int ~ exp }
-hcl = { soi ~ (nested_object | assignment | key_value_pair )* ~ eoi }
+pair = { key ~ colon ~ value ~ comma? }
+
+// Object keys
+keys = { key* }
+key = _{ ident | string }
+
+// Identifiers
 ident = @{ ident_first_char ~ ident_char* }
 ident_char = _{ letter | digit | dash | dot }
 ident_first_char = _{ letter | underscore }
-inline_comment = _{ (pound | double_slash) ~ (!eo_inline_comment ~ any)* }
-int = { "-"? ~ digit+ }
-key = _{ ident | string }
-keys = { key* }
-key_value_pair = { key ~ colon ~ value ~ comma? }
-last_list_item = _{ value ~ comma? }
-lbrace = _{ "{" }
-lbracket = _{ "[" }
 letter = _{ 'a'..'z' | 'A'..'Z' }
+
+// Values
+value = _{ list | object | string | number | boolean }
+
+// Lists
 list = { lbracket ~ list_item* ~ last_list_item? ~ rbracket }
 list_item = _{ value ~ comma }
-minus = { "-" }
-nested_object = { keys ~ object }
-newline = _{ windows_newline | unix_newline }
+last_list_item = _{ value ~ comma? }
+
+// Object literals
+object = { lbrace ~ (assignment | pair)* ~ rbrace }
+
+// Strings
+string = @{ double_quote ~ (!double_quote ~ any)* ~ double_quote }
+
+// Numbers
 number = _{ float | int }
-object = { lbrace ~ (assignment | key_value_pair)* ~ rbrace }
+float = ${ "-"? ~ int ~ dot ~ int? ~ exp? | int ~ exp }
+int = { "-"? ~ digit+ }
+exp = ${ ^"e" ~ (plus | minus)? ~ int }
+digit = _{ '0'..'9' }
+
+// Booleans
+boolean = { true_lit | false_lit }
+true_lit = { "true" }
+false_lit = { "false" }
+
+// Punctuation
+colon = _{ ":" }
+comma = _{ "," }
+dash = _{ "-" }
+dot = _{ "." }
+double_quote = _{ "\"" }
+equals = _{ "=" }
+lbrace = _{ "{" }
+lbracket = _{ "[" }
+minus = { "-" }
 plus = { "+" }
 pound = _{ "#" }
 rbrace = _{ "}" }
 rbracket = _{ "]" }
-space = _{ " " }
-string = @{ double_quote ~ (!double_quote ~ any)* ~ double_quote }
-tab = _{ "\t" }
-true_lit = { "true" }
 underscore = _{ "_" }
-unix_newline = _{ "\n" }
-value = _{ list | object | string | number | boolean }
+
+// Comments
+comment = { inline_comment | block_comment }
+inline_comment = _{ (pound | double_slash) ~ (!eo_inline_comment ~ any)* }
+block_comment = _{ "/*" ~ (!"*/" ~ any)* ~ "*/" }
+double_slash = _{ "//" }
+eo_inline_comment = _{ newline | eoi }
+
+// Whitespace
 whitespace = _{ space | tab | newline }
+space = _{ " " }
+tab = _{ "\t" }
+newline = _{ windows_newline | unix_newline }
 windows_newline = _{ "\r\n" }
+unix_newline = _{ "\n" }

@@ -303,17 +303,19 @@ mod tests {
     }
 
     #[test]
-    fn parse_object() {
+    fn parse_nested_object() {
         parses_to! {
             parser: HclParser,
             input: "foo { bar = \"baz\" }",
-            rule: Rule::object,
+            rule: Rule::nested_object,
             tokens: [
-                object(0, 19, [
+                nested_object(0, 19, [
                     ident(0, 3),
-                    assignment(6, 17, [
-                        ident(6, 9),
-                        string(12, 17)
+                    object(4, 19, [
+                        assignment(6, 17, [
+                            ident(6, 9),
+                            string(12, 17)
+                        ])
                     ])
                 ])
             ]
@@ -321,18 +323,20 @@ mod tests {
     }
 
     #[test]
-    fn parse_nested_object() {
+    fn parse_multi_nested_object() {
         parses_to! {
             parser: HclParser,
             input: "foo \"bar\" { baz = \"qux\" }",
-            rule: Rule::object,
+            rule: Rule::nested_object,
             tokens: [
-                object(0, 25, [
+                nested_object(0, 25, [
                     ident(0, 3),
-                    ident(5, 8),
-                    assignment(12, 23, [
-                        ident(12, 15),
-                        string(18, 23)
+                    string(4, 9),
+                    object(10, 25, [
+                        assignment(12, 23, [
+                            ident(12, 15),
+                            string(18, 23)
+                        ])
                     ])
                 ])
             ]

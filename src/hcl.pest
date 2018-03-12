@@ -1,22 +1,25 @@
-object = { single_object | nested_object }
+hcl = { soi ~ (nested_object | assignment)* ~ eoi }
 
-single_object = _{ ident ~ "{" ~ assignment* ~ "}" }
-
-nested_object = _{ ident+ ~ "\"" ~ ident ~ "\"" ~ "{" ~ assignment* ~ "}" }
+nested_object = { ident+ ~ string* ~ object }
 
 ident =  @{
     ('a'..'z' | 'A'..'Z') ~ ident_char* |
     "_" ~ ident_char+
 }
+
 ident_char = _{ 'a'..'z' | 'A'..'Z' | '0'..'9' | "_" }
-
-assignment = { ident ~ "=" ~ value }
-
-value = _{ list | object | string | number | boolean }
 
 string = @{ double_quote ~ (!double_quote ~ any)* ~ double_quote }
 
 double_quote = _{ "\"" }
+
+object = { lbrace ~ assignment* ~ rbrace }
+lbrace = _{ "{" }
+rbrace = _{ "}" }
+
+assignment = { ident ~ "=" ~ value }
+
+value = _{ list | object | string | number | boolean }
 
 number = { float | int }
 float = ${

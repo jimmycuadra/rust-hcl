@@ -13,13 +13,13 @@ eo_inline_comment = _{ newline | eoi }
 equals = _{ "=" }
 exp = ${ ^"e" ~ (plus | minus)? ~ int }
 false_lit = { "false" }
-float = ${ int ~ dot ~ int? ~ exp? | int ~ exp }
+float = ${ "-"? ~ int ~ dot ~ int? ~ exp? | int ~ exp }
 hcl = { soi ~ (nested_object | assignment | key_value_pair )* ~ eoi }
 ident = @{ ident_first_char ~ ident_char* }
 ident_char = _{ letter | digit | dash | dot }
 ident_first_char = _{ letter | underscore }
 inline_comment = _{ (pound | double_slash) ~ (!eo_inline_comment ~ any)* }
-int = { digit+ }
+int = { "-"? ~ digit+ }
 key = _{ ident | string }
 keys = { key* }
 key_value_pair = { key ~ colon ~ value ~ comma? }

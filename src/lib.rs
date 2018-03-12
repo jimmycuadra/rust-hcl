@@ -54,7 +54,7 @@ mod tests {
     }
 
     #[test]
-    fn parse_digit_0() {
+    fn parse_int() {
         parses_to! {
             parser: HclParser,
             input: "0",
@@ -66,25 +66,13 @@ mod tests {
     }
 
     #[test]
-    fn parse_digit_01() {
+    fn parse_negative_int() {
         parses_to! {
             parser: HclParser,
-            input: "01",
+            input: "-1",
             rule: Rule::int,
             tokens: [
-                int(0, 2)
-            ]
-        }
-    }
-
-    #[test]
-    fn parse_digit_1000() {
-        parses_to! {
-            parser: HclParser,
-            input: "1000",
-            rule: Rule::int,
-            tokens: [
-                int(0, 4)
+                int(0, 2, [])
             ]
         }
     }

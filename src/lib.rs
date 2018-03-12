@@ -5,13 +5,25 @@
 #[cfg_attr(test, macro_use)] extern crate pest;
 #[macro_use] extern crate pest_derive;
 
+use pest::Parser;
+
 #[cfg(debug_assertions)]
 const _GRAMMAR: &'static str = include_str!("hcl.pest");
 
-/// A parser for HCL data contained in a string slice.
+#[derive(Debug)]
+pub enum Error<'i> {
+    Pest(pest::Error<'i, Rule>),
+}
+
+/// Parse HCL data contained in a string slice.
+pub fn parse(input: &str) -> Result<pest::iterators::Pairs<Rule>, Error> {
+    HclParser::parse(Rule::hcl, input).map_err(|error| Error::Pest(error))
+}
+
+/// A parser for HCL data.
 #[derive(Debug, Parser)]
 #[grammar = "hcl.pest"]
-pub struct HclParser;
+struct HclParser;
 
 #[cfg(test)]
 mod tests {

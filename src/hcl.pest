@@ -1,52 +1,47 @@
-hcl = { soi ~ (nested_object | assignment)* ~ eoi }
-
-nested_object = { ident+ ~ string* ~ object }
-
-ident =  @{
-    ('a'..'z' | 'A'..'Z') ~ ident_char* |
-    "_" ~ ident_char+
-}
-
-ident_char = _{ 'a'..'z' | 'A'..'Z' | '0'..'9' | "_" }
-
-string = @{ double_quote ~ (!double_quote ~ any)* ~ double_quote }
-
-double_quote = _{ "\"" }
-
-object = { lbrace ~ assignment* ~ rbrace }
-lbrace = _{ "{" }
-rbrace = _{ "}" }
-
-assignment = { ident ~ "=" ~ value }
-
-value = _{ list | object | string | number | boolean }
-
-number = { float | int }
-float = ${
-  int ~ "." ~ int? ~ exp? |
-  int ~ exp
-}
-int = { digit+ }
-digit = _{ '0'..'9' }
-exp = ${ ^"e" ~ (plus | minus)? ~ int }
-plus = { "+" }
-minus = { "-" }
-
+assignment = { key ~ equals ~ value }
+block_comment = _{ "/*" ~ (!"*/" ~ any)* ~ "*/" }
 boolean = { true_lit | false_lit }
-true_lit = { "true" }
-false_lit = { "false" }
-
-list = { "[" ~ list_item* ~ last_list_item? ~ "]" }
-list_item = _{ value ~ comma }
 comma = _{ "," }
-last_list_item = _{ value ~ comma? }
-
-whitespace = _{ " " | "\t" | newline }
-newline = _{ "\r\n" | "\n" }
-
 comment = { inline_comment | block_comment }
-inline_comment = _{ (pound | double_slash) ~ (!eo_inline_comment ~ any)* }
-pound = _{ "#" }
+dash = _{ "-" }
+digit = _{ '0'..'9' }
+dot = _{ "." }
+double_quote = _{ "\"" }
 double_slash = _{ "//" }
 eo_inline_comment = _{ newline | eoi }
-block_comment = _{ "/*" ~ (!"*/" ~ any)* ~ "*/" }
+equals = _{ "=" }
+exp = ${ ^"e" ~ (plus | minus)? ~ int }
+false_lit = { "false" }
+float = ${ int ~ dot ~ int? ~ exp? | int ~ exp }
+hcl = { soi ~ (nested_object | assignment)* ~ eoi }
+ident = @{ ident_first_char ~ ident_char* }
+ident_char = _{ letter | digit | dash | dot }
+ident_first_char = _{ letter | underscore }
+inline_comment = _{ (pound | double_slash) ~ (!eo_inline_comment ~ any)* }
+int = { digit+ }
+key = _{ ident | string }
+keys = { key* }
+last_list_item = _{ value ~ comma? }
+lbrace = _{ "{" }
+lbracket = _{ "[" }
+letter = _{ 'a'..'z' | 'A'..'Z' }
+list = { lbracket ~ list_item* ~ last_list_item? ~ rbracket }
+list_item = _{ value ~ comma }
+minus = { "-" }
+nested_object = { keys ~ object }
+newline = _{ windows_newline | unix_newline }
+number = _{ float | int }
+object = { lbrace ~ assignment* ~ rbrace }
+plus = { "+" }
+pound = _{ "#" }
+rbrace = _{ "}" }
+rbracket = _{ "]" }
+space = _{ " " }
+string = @{ double_quote ~ (!double_quote ~ any)* ~ double_quote }
+tab = _{ "\t" }
+true_lit = { "true" }
+underscore = _{ "_" }
+unix_newline = _{ "\n" }
+value = _{ list | object | string | number | boolean }
+whitespace = _{ space | tab | newline }
+windows_newline = _{ "\r\n" }

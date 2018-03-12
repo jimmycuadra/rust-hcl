@@ -190,9 +190,7 @@ mod tests {
             rule: Rule::list,
             tokens: [
                 list(0, 6, [
-                    number(1, 5, [
-                        int(1, 5)
-                    ])
+                    int(1, 5)
                 ])
             ]
         }
@@ -286,6 +284,23 @@ mod tests {
     }
 
     #[test]
+    fn parse_list_heterogenous() {
+        parses_to! {
+            parser: HclParser,
+            input: "[true, 1]",
+            rule: Rule::list,
+            tokens: [
+                list(0, 9, [
+                    boolean(1, 5, [
+                       true_lit(1, 5)
+                    ]),
+                    int(7, 8)
+                ])
+            ]
+        }
+    }
+
+    #[test]
     fn parse_assignment() {
         parses_to! {
             parser: HclParser,
@@ -310,7 +325,9 @@ mod tests {
             rule: Rule::nested_object,
             tokens: [
                 nested_object(0, 19, [
-                    ident(0, 3),
+                    keys(0, 3, [
+                        ident(0, 3)
+                    ]),
                     object(4, 19, [
                         assignment(6, 17, [
                             ident(6, 9),
@@ -330,8 +347,10 @@ mod tests {
             rule: Rule::nested_object,
             tokens: [
                 nested_object(0, 25, [
-                    ident(0, 3),
-                    string(4, 9),
+                    keys(0, 9, [
+                        ident(0, 3),
+                        string(4, 9)
+                    ]),
                     object(10, 25, [
                         assignment(12, 23, [
                             ident(12, 15),

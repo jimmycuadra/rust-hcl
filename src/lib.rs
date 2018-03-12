@@ -341,7 +341,7 @@ mod tests {
                         ident(0, 3)
                     ]),
                     object(4, 19, [
-                        assignment(6, 17, [
+                        assignment(6, 18, [
                             ident(6, 9),
                             string(12, 17)
                         ])
@@ -364,7 +364,7 @@ mod tests {
                         string(4, 9)
                     ]),
                     object(10, 25, [
-                        assignment(12, 23, [
+                        assignment(12, 24, [
                             ident(12, 15),
                             string(18, 23)
                         ])

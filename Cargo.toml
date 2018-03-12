@@ -1,0 +1,8 @@
+[package]
+name = "hcl"
+version = "0.1.0"
+authors = ["Jimmy Cuadra <jimmy@jimmycuadra.com>"]
+
+[dependencies]
+pest = "1.0.6"
+pest_derive = "1.0.6"
